@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beniflix - Personal Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1c1c1e;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .language-switch {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: #2f3640;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        .language-switch a {
+            color: white;
+            margin: 0 0.5rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+
+        .language-switch a:hover {
+            background-color: #ff4757;
+        }
+
+        .language-switch a.active {
+            background-color: #ff4757;
+        }
+
+        a {
+            color: #ff4757;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #ff6b81;
+        }
+
+        /* Header and User Info Styles */
+        .user-container {
+            padding: 3rem 2rem;
+            text-align: center;
+            background-color: #2f3640;
+            border-bottom: 5px solid #ff4757;
+        }
+
+        .user-container h1 {
+            color: #ff4757;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-container p {
+            font-size: 1.2rem;
+        }
+
+        .user-container ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 1.5rem;
+        }
+
+        .user-container ul li {
+            display: inline-block;
+            margin: 0 1rem;
+        }
+
+        /* Movie List Styles */
+        .movies-list {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .movies-list h2 {
+            font-size: 2.5rem;
+            color: #ff4757;
+            margin-bottom: 2rem;
+        }
+
+        /* Sort Container */
+        .sort-container {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            padding: 1rem;
+            background-color: #2f3640;
+            border-radius: 10px;
+        }
+
+        .sort-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0.5rem;
+        }
+
+        .sort-link {
+            padding: 0.8rem 1.5rem;
+            background-color: #1c1c1e;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sort-link:hover {
+            background-color: #ff4757;
+            color: white;
+        }
+
+        .sort-link.active {
+            background-color: #ff4757;
+        }
+
+        /* Movie Cards Style */
+        .movie-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .movie-card {
+            background-color: #2f3640;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .movie-card-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .movie-card h3 {
+            font-size: 1.5rem;
+            color: #ff6b81;
+            margin-bottom: 0.5rem;
+        }
+
+        .movie-card p {
+            color: #dcdde1;
+            margin-top: 0.5rem;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .view-btn, .download-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            background-color: #ff4757;
+        }
+
+        .download-btn {
+            background-color: #2ed573;
+        }
+
+        .view-btn:hover, .download-btn:hover {
+            transform: scale(1.05);
+            color: white;
+        }
+
+        /* Pagination Styles */
+        .pagination-container {
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pagination-item {
+            padding: 0.8rem 1.2rem;
+            background-color: #2f3640;
+            border-radius: 5px;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pagination-item:hover:not(.disabled) {
+            background-color: #ff4757;
+        }
+
+        .pagination-item.active {
+            background-color: #ff4757;
+        }
+
+        .pagination-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-size-selector {
+            margin-top: 1rem;
+        }
+
+        .page-size-selector select {
+            padding: 0.8rem;
+            background-color: #2f3640;
+            color: white;
+            border: 1px solid #ff4757;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Loading Indicator */
+        .loading-spinner {
+            display: none;
+            margin: 2rem auto;
+            text-align: center;
+            color: #ff4757;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .movie-cards {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .movie-card-image {
+                height: 300px;
+            }
+
+            .user-container h1 {
+                font-size: 2rem;
+            }
+
+            .movies-list h2 {
+                font-size: 2rem;
+            }
+        }
+        .recommended-section {
+    margin: 2rem 0;
+    padding: 1rem;
+    background-color: #1c1c1e;
+    border-radius: 8px;
+}
+
+        .recommended-section h2 {
+    color: #ff4757;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.recommended-movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+        .back-button {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.back-button:hover {
+    background-color: #ff6b81;
+    transform: scale(1.05);
+}
+
+
+
+
+    </style>
+</head>
+<body>
+<div class="user-container">
+    <h1>Welcome, <span th:text="${userLogin}">User</span>!</h1>
+    <p>Your role: <span th:text="${userRole}">Role</span></p>
+    <button onclick="window.location.href='/login_page'" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Login
+    </button>
+    <ul>
+
+        <li th:if="${userRole.contains('ADMIN')}"><a href="/admin/users">Manage Users</a></li>
+    </ul>
+</div>
+
+<div class="movies-list">
+    <h2>Available Movies</h2>
+
+    <!-- Sort Section -->
+    <div class="sort-container">
+        <div class="sort-options">
+            <a href="#" class="sort-link" data-sort="name">
+                Name <span class="sort-indicator"></span>
+            </a>
+            <a href="#" class="sort-link" data-sort="description">
+                Description <span class="sort-indicator"></span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+    </div>
+
+    <!-- Movies Container -->
+    <div id="movieCardsContainer" class="movie-cards">
+        <!-- Movies will be loaded here dynamically -->
+    </div>
+
+    <div class="recommended-section">
+        <h2>Recommended Movies</h2>
+        <div class="recommended-movies-grid">
+            <div th:each="movie : ${recommendedMovies}" class="movie-card">
+                <img th:src="${movie.imageUrl}" alt="Movie Image">
+                <h3 th:text="${movie.name}"></h3>
+                <p th:text="${movie.description}"></p>
+                <a th:href="@{/movies/{id}(id=${movie.id})}" class="view-details-btn">View Details</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+        <div class="pagination" id="paginationControls">
+            <!-- Pagination will be generated dynamically -->
+        </div>
+
+        <div class="page-size-selector">
+            <span>Items per page: </span>
+            <select id="pageSizeSelect">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentPage = 0;
+    let currentSize = 10;
+    let currentSort = 'name';
+    let currentDirection = 'asc';
+
+    function loadMovies() {
+        $('.loading-spinner').show();
+        $('#movieCardsContainer').css('opacity', '0.5');
+
+        $.ajax({
+            url: '/movies/api/paginated',
+            data: {
+                page: currentPage,
+                size: currentSize,
+                sortBy: currentSort,
+                direction: currentDirection
+            },
+            success: function(response) {
+                updateMovieCards(response.movies);
+                updatePagination(response);
+                updateSortIndicators();
+            },
+            complete: function() {
+                $('.loading-spinner').hide();
+                $('#movieCardsContainer').css('opacity', '1');
+            }
+        });
+    }
+
+    function updateMovieCards(movies) {
+        const container = $('#movieCardsContainer');
+        container.empty();
+
+        movies.forEach(movie => {
+            container.append(`
+                <div class="movie-card">
+                    <img src="${movie.imageUrl}" class="movie-card-image" alt="${movie.name}">
+                    <div class="movie-card-content">
+                        <h3>${movie.name}</h3>
+                        <p>${movie.description}</p>
+                        <div class="card-actions">
+                            <a href="/movie/details/${movie.id}" class="view-btn">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <a href="/movies/${movie.id}/download" class="download-btn">
+                                <i class="fas fa-download"></i> Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `);
+        });
+    }
+
+    function updatePagination(data) {
+        const controls = $('#paginationControls');
+        controls.empty();
+
+        // Previous button
+        if (data.totalPages > 1) {
+            controls.append(`
+                <a href="#" class="pagination-item ${currentPage === 0 ? 'disabled' : ''}"
+                   onclick="return changePage(${currentPage - 1});">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            `);
+
+            // Page numbers
+            for (let i = 0; i < data.totalPages; i++) {
+                controls.append(`
+                    <a href="#" class="pagination-item ${i === currentPage ? 'active' : ''}"
+                       onclick="return changePage(${i});">
+                        ${i + 1}
+                    </a>
+                `);
+            }
+
+            // Next button
+            controls.append(`
+                <a href="#" class="pagination-item ${currentPage === data.totalPages - 1 ? 'disabled' : ''}"
+                   onclick="return changePage(${currentPage + 1});">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            `);
+        }
+    }
+
+    function updateSortIndicators() {
+        $('.sort-indicator').text('');
+        $('.sort-link').removeClass('active');
+        $(`.sort-link[data-sort="${currentSort}"]`)
+            .addClass('active')
+            .find('.sort-indicator')
+            .text(currentDirection === 'asc' ? ' ↑' : ' ↓');
+    }
+
+    function changePage(page) {
+        if (page >= 0) {
+            currentPage = page;
+            loadMovies();
+        }
+        return false;
+    }
+
+    function changePageSize(size) {
+        currentSize = size;
+        currentPage = 0;
+        loadMovies();
+    }
+
+    function changeSort(sortField) {
+        if (currentSort === sortField) {
+            currentDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSort = sortField;
+            currentDirection = 'asc';
+        }
+        currentPage = 0;
+        loadMovies();
+    }
+
+    // Event Listeners
+    $(document).ready(function() {
+        loadMovies();
+
+        $('.sort-link').click(function(e) {
+            e.preventDefault();
+            changeSort($(this).data('sort'));
+        });
+
+        $('#pageSizeSelect').change(function() {
+            changePageSize($(this).val());
+        });
+    });
+</script>
+</body>
+</html>

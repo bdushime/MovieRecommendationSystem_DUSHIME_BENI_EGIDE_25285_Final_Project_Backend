@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1c1c1e; /* Dark background */
+            color: white; /* Light text */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden; /* Prevents scrollbars */
+        }
+        h1 {
+            color: #ff4757; /* Red accent color for the title */
+            margin-bottom: 2rem;
+            opacity: 0; /* Start with hidden text */
+            transform: translateY(-20px); /* Start slightly above */
+            animation: slideIn 0.5s forwards 0.3s; /* Slide-in animation */
+        }
+        .button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            background-color: #ff4757; /* Red button color */
+            transition: background-color 0.3s;
+            opacity: 0; /* Start with hidden buttons */
+            transform: translateY(20px); /* Start slightly below */
+            animation: slideIn 0.5s forwards 0.5s; /* Slide-in animation */
+        }
+        .button:hover {
+            background-color: #e84118; /* Darker red on hover */
+        }
+        footer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 0.9rem;
+            color: #666; /* Light gray text for the footer */
+            opacity: 0; /* Start with hidden footer */
+            transform: translateY(20px); /* Start slightly below */
+            animation: slideIn 0.5s forwards 0.7s; /* Slide-in animation */
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1; /* Fade in */
+                transform: translateY(0); /* Move to original position */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Welcome to BeniFlix!</h1>
+<a class="button" href="/register">Navigate to Registration</a>
+<a class="button" href="/login">Navigate to Login</a>
+
+<footer>
+    <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

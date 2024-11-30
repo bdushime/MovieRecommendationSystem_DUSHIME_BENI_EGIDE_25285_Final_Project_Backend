@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/MovieRecommendation.iml" filepath="$PROJECT_DIR$/.idea/MovieRecommendation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/signup/signup.iml" filepath="$PROJECT_DIR$/signup/signup.iml" />
+    </modules>
+  </component>
+</project>

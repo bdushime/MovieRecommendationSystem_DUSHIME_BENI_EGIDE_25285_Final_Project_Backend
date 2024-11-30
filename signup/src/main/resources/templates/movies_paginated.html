@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Movies List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <!-- Search Form -->
+    <form th:action="@{/movies/paginated}" method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" class="form-control" name="keyword"
+                   th:value="${keyword}" placeholder="Search movies...">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Sorting Options -->
+    <div class="mb-3">
+        <span>Sort By: </span>
+        <a th:href="@{/movies/paginated(page=${currentPage}, size=${pageSize},
+                           sortBy='name', direction=${direction == 'asc' ? 'desc' : 'asc'}, 
+                           keyword=${keyword})}"
+           th:text="'Name ' + (${sortBy == 'name'} ? (${direction == 'asc'} ? '↑' : '↓') : '')">
+        </a> |
+        <a th:href="@{/movies/paginated(page=${currentPage}, size=${pageSize},
+                           sortBy='description', direction=${direction == 'asc' ? 'desc' : 'asc'}, 
+                           keyword=${keyword})}"
+           th:text="'Description ' + (${sortBy == 'description'} ? (${direction == 'asc'} ? '↑' : '↓') : '')">
+        </a>
+    </div>
+
+    <!-- Movies Grid -->
+    <div class="row">
+        <div class="col-md-4 mb-4" th:each="movie : ${movies}">
+            <div class="card">
+                <img th:src="${movie.imageUrl}" class="card-img-top" alt="Movie Image">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${movie.name}">Movie Name</h5>
+                    <p class="card-text" th:text="${movie.description}">Description</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                <a class="page-link"
+                   th:href="@{/movies/paginated(page=${currentPage - 1}, size=${pageSize},
+                                sortBy=${sortBy}, direction=${direction}, keyword=${keyword})}">
+                    Previous
+                </a>
+            </li>
+
+            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                <a class="page-link"
+                   th:href="@{/movies/paginated(page=${pageNum}, size=${pageSize},
+                                sortBy=${sortBy}, direction=${direction}, keyword=${keyword})}"
+                   th:text="${pageNum + 1}">
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                <a class="page-link"
+                   th:href="@{/movies/paginated(page=${currentPage + 1}, size=${pageSize},
+                                sortBy=${sortBy}, direction=${direction}, keyword=${keyword})}">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Page Size Selector -->
+    <div class="text-center mt-3">
+        <span>Items per page: </span>
+        <select onchange="window.location.href=this.value">
+            <option th:each="size : ${{5, 10, 20, 50}}"
+                    th:value="@{/movies/paginated(page=0, size=${size}, sortBy=${sortBy},
+                                 direction=${direction}, keyword=${keyword})}"
+                    th:text="${size}"
+                    th:selected="${size == pageSize}">
+            </option>
+        </select>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
