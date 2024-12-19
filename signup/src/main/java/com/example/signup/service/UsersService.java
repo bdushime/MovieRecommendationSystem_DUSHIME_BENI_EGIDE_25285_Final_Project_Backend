@@ -26,6 +26,7 @@ import java.util.*;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class UsersService implements UserDetailsService {
 
     @Autowired
@@ -67,6 +68,7 @@ public class UsersService implements UserDetailsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Fetch user from the database using login
         Optional<UsersModel> optionalUser = userRepository.findByLogin(username);
@@ -87,6 +89,7 @@ public class UsersService implements UserDetailsService {
 
 
 
+    @Transactional(readOnly = false)
     public UsersModel registerUser(String login, String password, String email, String role) {
         if (userRepository.findByLogin(login).isPresent()) {
             return null; // User already exists
@@ -149,7 +152,7 @@ public class UsersService implements UserDetailsService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void resetPassword(String token, String newPassword) {
         Optional<UsersModel> userOpt = userRepository.findByResetToken(token);
         if (userOpt.isEmpty() || !validateResetToken(token)) {
@@ -252,7 +255,7 @@ public class UsersService implements UserDetailsService {
     }
 
 
-    @Transactional // Ensure transactional context
+    @Transactional(readOnly = false)
     public boolean resetUserPassword(String token, String newPassword) {
         // Validate the token
         if (!validatePasswordResetToken(token)) {
